@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireSense — AI Learning Path & Skill Gap Analyzer</title>
+    <meta name="description" content="AI-powered personalized learning path generator and skill gap analyzer. Upload your resume, set career goals, and get a custom roadmap to industry readiness.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-mesh"></div>
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <div class="logo-icon">
+                    <i data-lucide="brain-circuit"></i>
+                </div>
+                <span class="logo-text">Hire<span class="accent">Sense</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#analyzer" class="nav-link">Analyze</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i data-lucide="sparkles"></i>
+                <span>AI-Powered Career Intelligence</span>
+            </div>
+            <h1 class="hero-title">
+                Discover Your <span class="gradient-text">Skill Gaps</span><br>
+                Build Your <span class="gradient-text-alt">Learning Path</span>
+            </h1>
+            <p class="hero-subtitle">
+                Transform your resume into an intelligent learning roadmap. Our AI analyzes your skills, 
+                identifies gaps, and creates a personalized path to make you industry-ready.
+            </p>
+            <div class="hero-actions">
+                <a href="#analyzer" class="btn btn-primary btn-lg" id="hero-cta">
+                    <i data-lucide="rocket"></i>
+                    <span>Start Analysis</span>
+                </a>
+                <a href="#how-it-works" class="btn btn-outline btn-lg">
+                    <i data-lucide="play-circle"></i>
+                    <span>See How It Works</span>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="50">0+</div>
+                    <div class="stat-label">Skills Analyzed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="20">0+</div>
+                    <div class="stat-label">Career Paths</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="100">0%</div>
+                    <div class="stat-label">Personalized</div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="orbit-container">
+                <div class="orbit-ring ring-1">
+                    <div class="orbit-dot" style="--delay: 0s;"><i data-lucide="code-2"></i></div>
+                    <div class="orbit-dot" style="--delay: 2s;"><i data-lucide="database"></i></div>
+                    <div class="orbit-dot" style="--delay: 4s;"><i data-lucide="cloud"></i></div>
+                </div>
+                <div class="orbit-ring ring-2">
+                    <div class="orbit-dot" style="--delay: 1s;"><i data-lucide="brain"></i></div>
+                    <div class="orbit-dot" style="--delay: 3s;"><i data-lucide="bar-chart-3"></i></div>
+                </div>
+                <div class="orbit-center">
+                    <i data-lucide="target"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge"><i data-lucide="zap"></i> Key Features</span>
+                <h2 class="section-title">Everything You Need to <span class="gradient-text">Level Up</span></h2>
+                <p class="section-desc">Our AI-driven platform delivers comprehensive analysis and actionable guidance</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" style="--delay: 0.1s">
+                    <div class="feature-icon icon-purple"><i data-lucide="scan-search"></i></div>
+                    <h3>Skill Gap Detection</h3>
+                    <p>Identifies exactly what skills you need to learn based on your career goals and current profile</p>
+                </div>
+                <div class="feature-card" style="--delay: 0.2s">
+                    <div class="feature-icon icon-blue"><i data-lucide="route"></i></div>
+                    <h3>Learning Roadmap</h3>
+                    <p>Step-by-step adaptive roadmap tailored to your goals, timeline, and current skill level</p>
+                </div>
+                <div class="feature-card" style="--delay: 0.3s">
+                    <div class="feature-icon icon-teal"><i data-lucide="bar-chart-horizontal"></i></div>
+                    <h3>Visual Analytics</h3>
+                    <p>Beautiful charts and visualizations showing your skill landscape and progress opportunities</p>
+                </div>
+                <div class="feature-card" style="--delay: 0.4s">
+                    <div class="feature-icon icon-amber"><i data-lucide="lightbulb"></i></div>
+                    <h3>Smart Recommendations</h3>
+                    <p>AI-curated courses, projects, and resources ranked by priority and relevance</p>
+                </div>
+                <div class="feature-card" style="--delay: 0.5s">
+                    <div class="feature-icon icon-rose"><i data-lucide="gauge"></i></div>
+                    <h3>Career Readiness Score</h3>
+                    <p>Instant assessment of your readiness for your target role with actionable insights</p>
+                </div>
+                <div class="feature-card" style="--delay: 0.6s">
+                    <div class="feature-icon icon-green"><i data-lucide="file-text"></i></div>
+                    <h3>Resume Analysis</h3>
+                    <p>Upload PDF, DOCX, or text — our NLP engine extracts and categorizes your skills automatically</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-section" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge"><i data-lucide="workflow"></i> Process</span>
+                <h2 class="section-title">How <span class="gradient-text">HireSense</span> Works</h2>
+                <p class="section-desc">Three simple steps to your personalized learning journey</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-icon"><i data-lucide="upload"></i></div>
+                    <h3>Upload Your Profile</h3>
+                    <p>Share your resume, academic details, or manually list your skills and experience</p>
+                </div>
+                <div class="step-connector"><i data-lucide="chevron-right"></i></div>
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <div class="step-icon"><i data-lucide="cpu"></i></div>
+                    <h3>AI Analyzes</h3>
+                    <p>Our AI engine extracts skills, compares with industry standards, and identifies gaps</p>
+                </div>
+                <div class="step-connector"><i data-lucide="chevron-right"></i></div>
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <div class="step-icon"><i data-lucide="map"></i></div>
+                    <h3>Get Your Roadmap</h3>
+                    <p>Receive a personalized learning path with courses, projects, and milestone tracking</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analyzer Section -->
+    <section class="analyzer-section" id="analyzer">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge"><i data-lucide="scan"></i> Analyzer</span>
+                <h2 class="section-title">Analyze Your <span class="gradient-text">Skills</span></h2>
+                <p class="section-desc">Upload your resume or enter your details to get started</p>
+            </div>
+            
+            <div class="analyzer-container">
+                <form id="analysisForm" class="analyzer-form" enctype="multipart/form-data">
+                    <!-- Career Goal -->
+                    <div class="form-group">
+                        <label for="career_goal" class="form-label">
+                            <i data-lucide="target"></i>
+                            Target Career / Role <span class="required">*</span>
+                        </label>
+                        <div class="form-input-wrapper">
+                            <input type="text" id="career_goal" name="career_goal" 
+                                   placeholder="e.g., Full Stack Developer, Data Scientist, ML Engineer..."
+                                   class="form-input" required>
+                        </div>
+                        <div class="career-suggestions">
+                            <span class="suggestion-chip" data-value="Software Engineer">Software Engineer</span>
+                            <span class="suggestion-chip" data-value="Data Scientist">Data Scientist</span>
+                            <span class="suggestion-chip" data-value="Frontend Developer">Frontend Developer</span>
+                            <span class="suggestion-chip" data-value="Backend Developer">Backend Developer</span>
+                            <span class="suggestion-chip" data-value="Machine Learning Engineer">ML Engineer</span>
+                            <span class="suggestion-chip" data-value="DevOps Engineer">DevOps Engineer</span>
+                            <span class="suggestion-chip" data-value="Web Developer">Web Developer</span>
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i data-lucide="file-up"></i>
+                            Upload Resume / Academic Document
+                        </label>
+                        <div class="file-upload-zone" id="dropZone">
+                            <div class="upload-icon">
+                                <i data-lucide="cloud-upload"></i>
+                            </div>
+                            <p class="upload-text">Drag & drop your file here, or <span class="upload-browse">browse</span></p>
+                            <p class="upload-hint">Supports PDF, DOCX, TXT (max 16MB)</p>
+                            <input type="file" id="resume_file" name="resume_file" 
+                                   accept=".pdf,.docx,.txt" class="file-input-hidden">
+                            <div class="file-preview" id="filePreview" style="display:none;">
+                                <i data-lucide="file-check"></i>
+                                <span id="fileName"></span>
+                                <button type="button" class="file-remove" id="fileRemove">
+                                    <i data-lucide="x"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manual Skills Input -->
+                    <div class="form-group">
+                        <label for="skills_text" class="form-label">
+                            <i data-lucide="list-checks"></i>
+                            Skills & Technologies
+                        </label>
+                        <textarea id="skills_text" name="skills_text" 
+                                  placeholder="List your known skills, technologies, tools, programming languages...&#10;e.g., Python, React, SQL, Machine Learning, Git, Docker..."
+                                  class="form-textarea" rows="3"></textarea>
+                    </div>
+
+                    <!-- Resume/Academic Text -->
+                    <div class="form-group">
+                        <label for="resume_text" class="form-label">
+                            <i data-lucide="text"></i>
+                            Resume / Academic Details (Text)
+                        </label>
+                        <textarea id="resume_text" name="resume_text" 
+                                  placeholder="Paste your resume content, academic background, projects, experience here...&#10;OR upload a file above instead."
+                                  class="form-textarea" rows="5"></textarea>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn btn-primary btn-lg btn-full" id="analyzeBtn">
+                        <i data-lucide="brain-circuit"></i>
+                        <span>Analyze & Generate Learning Path</span>
+                        <div class="btn-loader" style="display:none;">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+        <div class="loading-content">
+            <div class="loading-brain">
+                <div class="brain-pulse"></div>
+                <i data-lucide="brain-circuit"></i>
+            </div>
+            <h2 class="loading-title">Analyzing Your Profile</h2>
+            <div class="loading-steps">
+                <div class="loading-step active" id="step1">
+                    <div class="step-check"><i data-lucide="check"></i></div>
+                    <span>Extracting skills from profile...</span>
+                </div>
+                <div class="loading-step" id="step2">
+                    <div class="step-check"><i data-lucide="check"></i></div>
+                    <span>Comparing with industry requirements...</span>
+                </div>
+                <div class="loading-step" id="step3">
+                    <div class="step-check"><i data-lucide="check"></i></div>
+                    <span>Identifying skill gaps...</span>
+                </div>
+                <div class="loading-step" id="step4">
+                    <div class="step-check"><i data-lucide="check"></i></div>
+                    <span>Generating personalized roadmap...</span>
+                </div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-bar-fill" id="loadingProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <section class="results-section" id="results" style="display:none;">
+        <div class="container">
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="results-header-content">
+                    <h2 class="results-title">
+                        <i data-lucide="sparkles"></i>
+                        Your Personalized Analysis
+                    </h2>
+                    <p class="results-subtitle" id="resultsSubtitle">Complete skill gap analysis and learning roadmap</p>
+                </div>
+                <button class="btn btn-outline" id="newAnalysisBtn">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>New Analysis</span>
+                </button>
+            </div>
+
+            <!-- Career Readiness Score -->
+            <div class="readiness-card" id="readinessCard">
+                <div class="readiness-left">
+                    <h3 class="readiness-label">Career Readiness Score</h3>
+                    <div class="readiness-gauge">
+                        <canvas id="readinessGauge" width="220" height="220"></canvas>
+                        <div class="readiness-score-display">
+                            <span class="score-number" id="readinessScore">0</span>
+                            <span class="score-percent">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="readiness-right">
+                    <div class="readiness-details">
+                        <div class="readiness-meta">
+                            <div class="meta-item">
+                                <i data-lucide="clock"></i>
+                                <div>
+                                    <span class="meta-label">Estimated Time</span>
+                                    <span class="meta-value" id="timeToReady">-</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <i data-lucide="trending-up"></i>
+                                <div>
+                                    <span class="meta-label">Market Demand</span>
+                                    <span class="meta-value" id="marketDemand">-</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <i data-lucide="award"></i>
+                                <div>
+                                    <span class="meta-label">Current Level</span>
+                                    <span class="meta-value" id="currentLevel">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="readiness-tags">
+                            <h4><i data-lucide="thumbs-up"></i> Strengths</h4>
+                            <div class="tag-list" id="strengthTags"></div>
+                        </div>
+                        <div class="readiness-tags">
+                            <h4><i data-lucide="alert-triangle"></i> Areas to Improve</h4>
+                            <div class="tag-list" id="improveTags"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-grid">
+                <!-- Skill Radar Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="radar"></i> Skill Category Radar</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="skillRadarChart"></canvas>
+                    </div>
+                </div>
+                <!-- Skills Gap Bar Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i data-lucide="bar-chart-3"></i> Skills Gap Analysis</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="gapBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Breakdown -->
+            <div class="skills-breakdown">
+                <div class="chart-header">
+                    <h3><i data-lucide="layers"></i> Detailed Skill Breakdown</h3>
+                </div>
+                <div class="skills-grid" id="skillsGrid">
+                    <!-- Strong Skills -->
+                    <div class="skill-column">
+                        <div class="skill-column-header strong">
+                            <i data-lucide="check-circle-2"></i>
+                            <span>Strong Skills</span>
+                        </div>
+                        <div class="skill-list" id="strongSkills"></div>
+                    </div>
+                    <!-- Moderate Skills -->
+                    <div class="skill-column">
+                        <div class="skill-column-header moderate">
+                            <i data-lucide="minus-circle"></i>
+                            <span>Moderate Skills</span>
+                        </div>
+                        <div class="skill-list" id="moderateSkills"></div>
+                    </div>
+                    <!-- Weak Skills -->
+                    <div class="skill-column">
+                        <div class="skill-column-header weak">
+                            <i data-lucide="alert-circle"></i>
+                            <span>Weak Skills</span>
+                        </div>
+                        <div class="skill-list" id="weakSkills"></div>
+                    </div>
+                    <!-- Missing Skills -->
+                    <div class="skill-column">
+                        <div class="skill-column-header missing">
+                            <i data-lucide="x-circle"></i>
+                            <span>Missing Skills</span>
+                        </div>
+                        <div class="skill-list" id="missingSkills"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Roadmap -->
+            <div class="roadmap-section">
+                <div class="chart-header">
+                    <h3><i data-lucide="route"></i> Your Personalized Learning Roadmap</h3>
+                </div>
+                <div class="roadmap-timeline" id="roadmapTimeline"></div>
+            </div>
+
+            <!-- Priority Recommendations -->
+            <div class="priority-section">
+                <div class="chart-header">
+                    <h3><i data-lucide="list-ordered"></i> Priority Learning Recommendations</h3>
+                </div>
+                <div class="priority-list" id="priorityList"></div>
+            </div>
+
+            <!-- Recommended Projects -->
+            <div class="projects-section">
+                <div class="chart-header">
+                    <h3><i data-lucide="code-2"></i> Recommended Projects</h3>
+                </div>
+                <div class="projects-grid" id="projectsGrid"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="nav-logo">
+                        <div class="logo-icon"><i data-lucide="brain-circuit"></i></div>
+                        <span class="logo-text">Hire<span class="accent">Sense</span></span>
+                    </div>
+                    <p>AI-powered personalized learning paths for the next generation of professionals.</p>
+                </div>
+                <div class="footer-links">
+                    <span>Built with</span>
+                    <i data-lucide="heart" class="heart-icon"></i>
+                    <span>using Gemini AI</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Error Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
