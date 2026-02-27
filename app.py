@@ -263,7 +263,7 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
         }
     }
     
-       career_lower = career_goal.lower()
+    career_lower = career_goal.lower()
     matched_role = "default"
     for role_key in role_requirements:
         if role_key in career_lower:
