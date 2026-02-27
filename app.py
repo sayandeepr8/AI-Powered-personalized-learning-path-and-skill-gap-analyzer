@@ -13,11 +13,9 @@ from flask import Flask, render_template, request, jsonify, session
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
-# PDF and DOCX parsing
 import PyPDF2
 from docx import Document
 
-# Google Gemini AI
 import google.generativeai as genai
 
 load_dotenv()
@@ -25,7 +23,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'hiresense-secret-key-2026')
 
-# Configure upload
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -33,7 +30,6 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max
 
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}
 
-# Configure Gemini
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
@@ -201,7 +197,6 @@ IMPORTANT:
         response = model.generate_content(prompt)
         response_text = response.text.strip()
         
-        # Clean response - remove markdown code blocks if present
         if response_text.startswith('```'):
             response_text = re.sub(r'^```(?:json)?\s*\n?', '', response_text)
             response_text = re.sub(r'\n?```\s*$', '', response_text)
@@ -221,10 +216,8 @@ IMPORTANT:
 def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
     """Generate a comprehensive analysis without API when Gemini is unavailable."""
     
-    # Extract skills from text using keyword matching
     all_text = (resume_text + " " + skills_text + " " + career_goal).lower()
     
-    # Comprehensive skill databases by category
     skill_db = {
         "Programming Languages": ["python", "java", "javascript", "typescript", "c++", "c#", "ruby", "go", "rust", "php", "swift", "kotlin", "r", "scala", "perl", "matlab", "dart", "lua"],
         "Web Development": ["html", "css", "react", "angular", "vue", "node.js", "express", "django", "flask", "spring boot", "next.js", "tailwind", "bootstrap", "sass", "webpack", "graphql", "rest api"],
@@ -235,7 +228,6 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
         "Soft Skills": ["leadership", "communication", "teamwork", "problem solving", "critical thinking", "project management", "agile", "scrum", "presentation"]
     }
     
-    # Role-based required skills
     role_requirements = {
         "software engineer": {
             "required": ["python", "java", "javascript", "git", "sql", "data structures", "algorithms", "rest api", "docker", "ci/cd", "linux", "testing"],
@@ -271,8 +263,7 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
         }
     }
     
-    # Find matching role
-    career_lower = career_goal.lower()
+       career_lower = career_goal.lower()
     matched_role = "default"
     for role_key in role_requirements:
         if role_key in career_lower:
@@ -281,21 +272,21 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
     
     requirements = role_requirements[matched_role]
     
-    # Detect skills in text
+    
     found_skills = set()
     for category, skills in skill_db.items():
         for skill in skills:
             if skill.lower() in all_text:
                 found_skills.add(skill)
     
-    # Classify skills
+    
     strong_skills = []
     moderate_skills = []
     weak_skills = []
     missing_skills = []
     
     for skill in found_skills:
-        # Check if skill appears multiple times (indicates stronger proficiency)
+    
         count = all_text.count(skill.lower())
         category = "General"
         for cat, skills_list in skill_db.items():
@@ -310,14 +301,14 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
         else:
             weak_skills.append({"name": skill.title(), "level": 35, "category": category})
     
-    # If not many skills detected, add some defaults
+    
     if len(strong_skills) < 2:
         strong_skills.extend([
             {"name": "Communication", "level": 75, "category": "Soft Skills"},
             {"name": "Problem Solving", "level": 70, "category": "Soft Skills"},
         ])
     
-    # Find missing skills from requirements
+    
     for skill in requirements["required"]:
         if skill.lower() not in found_skills and skill.lower() not in [s["name"].lower() for s in strong_skills + moderate_skills + weak_skills]:
             missing_skills.append({"name": skill.title(), "importance": "Critical", "category": "Core"})
@@ -326,7 +317,7 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
         if skill.lower() not in found_skills and skill.lower() not in [s["name"].lower() for s in strong_skills + moderate_skills + weak_skills]:
             missing_skills.append({"name": skill.title(), "importance": "High", "category": "Advanced"})
     
-    # Calculate category scores
+    
     categories = {}
     for skill in strong_skills:
         cat = skill["category"]
@@ -346,7 +337,7 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
             categories[cat] = {"scores": [], "required": 85}
         categories[cat]["scores"].append(skill["level"])
     
-    # Add missing categories
+    
     for skill in missing_skills:
         cat = skill["category"]
         if cat not in categories:
@@ -371,7 +362,7 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
             {"name": "Domain Knowledge", "current_score": 35, "required_score": 85, "gap": 50},
         ]
     
-    # Calculate overall readiness
+    
     all_scores = [s["level"] for s in strong_skills + moderate_skills + weak_skills]
     overall = int(sum(all_scores) / len(all_scores)) if all_scores else 35
     
@@ -494,7 +485,6 @@ def generate_fallback_analysis(resume_text, career_goal, skills_text=""):
     return {"success": True, "data": result}
 
 
-# ─── Routes ───────────────────────────────────────────────────────────────────
 
 @app.route('/')
 def index():
@@ -513,7 +503,7 @@ def analyze():
         if not career_goal:
             return jsonify({"success": False, "error": "Please provide a career goal or target role."})
         
-        # Handle file upload
+
         file = request.files.get('resume_file')
         if file and file.filename and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -525,7 +515,7 @@ def analyze():
             if extracted:
                 resume_text = extracted
             
-            # Clean up uploaded file
+
             try:
                 os.remove(filepath)
             except:
@@ -534,7 +524,7 @@ def analyze():
         if not resume_text and not skills_text:
             return jsonify({"success": False, "error": "Please provide a resume, academic details, or skills list."})
         
-        # Run AI analysis
+
         result = analyze_with_gemini(resume_text, career_goal, skills_text)
         
         return jsonify(result)
